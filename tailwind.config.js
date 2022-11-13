@@ -1,12 +1,17 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [],
+  content: ["./App.{js,jsx,ts,tsx}", "./pages/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    content: [
-      "./App.{js,jsx,ts,tsx}",
-      "./<custom directory>/**/*.{js,jsx,ts,tsx}",
-    ],
-    extend: {},
+    extend: {
+      colors: {
+        cgreen: "#06ac80",
+        cgray: "#696a80",
+        cdarkgray: "#313247",
+        cslate: "#f3f3f5",
+        cdarkslate: "#a8a9ae",
+        cwhite: "#ffffff",
+      },
+    },
   },
   plugins: [],
 };

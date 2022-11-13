@@ -9,15 +9,20 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.17.11",
     "expo": "~47.0.3",
+    "expo-constants": "^14.0.2",
     "expo-status-bar": "~1.4.2",
+    "firebase": "^9.14.0",
     "nativewind": "^2.0.11",
     "react": "18.1.0",
     "react-native": "0.70.5",
-    "tailwindcss": "^3.2.4"
+    "react-native-vector-icons": "^9.2.0",
+    "react-router-native": "^6.4.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9"
+    "@babel/core": "^7.12.9",
+    "tailwindcss": "^3.2.4"
   },
   "private": true
 }
