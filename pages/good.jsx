@@ -1,10 +1,10 @@
-import { View, Text, Image, ScrollView } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { Link, useParams } from "react-router-native";
 import { useCallback, useState, useEffect } from "react";
 import { fdb } from "../fb";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
-export default function Good() {
+export default function Good({ setTitle }) {
   const params = useParams();
   let [stores, setStores] = useState([]);
 
@@ -19,13 +19,13 @@ export default function Good() {
   }, [params]);
 
   useEffect(() => {
+    setTitle(params.id);
     loadStores();
   }, [loadStores]);
 
   return (
     <ScrollView>
       <View className="flex-1 p-5">
-        <Text className="text-2xl font-bold text-center">{params.id}</Text>
         {stores.map((s, i) => (
           <Store key={i} s={s.data()} />
         ))}

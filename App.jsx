@@ -15,17 +15,18 @@ import Good from "./pages/good";
 
 export default function App() {
   let [zipCode, setZipCode] = useState(undefined);
+  let [title, setTitle] = useState("");
 
   const ROUTES = [
     {
-      element: <Home zipCode={zipCode} />,
+      element: <Home zipCode={zipCode} setTitle={setTitle} />,
       path: "/",
     },
-    { element: <Stores />, path: "/stores" },
-    { element: <Store />, path: "/store/:id" },
-    { element: <Goods />, path: "/goods" },
-    { element: <Good />, path: `/good/:id` },
-    { element: <RecentViews />, path: "/recentviews" },
+    { element: <Stores setTitle={setTitle} />, path: "/stores" },
+    { element: <Store setTitle={setTitle} />, path: "/store/:id" },
+    { element: <Goods setTitle={setTitle} />, path: "/goods" },
+    { element: <Good setTitle={setTitle} />, path: `/good/:id` },
+    { element: <RecentViews setTitle={setTitle} />, path: "/recentviews" },
   ];
 
   const getZipCode = useCallback(async () => {
@@ -44,7 +45,7 @@ export default function App() {
   return (
     <NativeRouter>
       <View className="h-full flex">
-        <Header zipCode={zipCode} />
+        <Header zipCode={zipCode} title={title} />
         <View className="flex-1">
           <Routes>
             {ROUTES.map((route) => (
@@ -69,7 +70,7 @@ const MENU = [
   { title: "Recent Views", path: "/recentviews" },
 ];
 
-function Header() {
+function Header({ title }) {
   let [menu, setMenu] = useState(false);
 
   return (
@@ -77,10 +78,16 @@ function Header() {
       className="bg-slate-100 flex flex-row justify-between py-2 px-5 shadow-lg items-center"
       style={{ marginTop: Constants.statusBarHeight }}
     >
-      <Link to="/">
-        <Text className="text-cgreen text-3xl font-bold">GrocerEZ</Text>
+      <Link to="/" className="w-1/3">
+        <Text className="text-cgreen text-xl font-bold">GrocerEZ</Text>
       </Link>
-      <TouchableOpacity onPress={() => setMenu(true)}>
+      <View className="w-1/3 flex justify-center items-center">
+        <Text className="text-cdarkgray font-bold">{title}</Text>
+      </View>
+      <TouchableOpacity
+        className="w-1/3 flex items-end"
+        onPress={() => setMenu(true)}
+      >
         <Icon name="menu" size={30} />
       </TouchableOpacity>
       <Modal
@@ -122,9 +129,21 @@ function Footer({ zipCode, setZipCode }) {
 
   return (
     <View className="flex flex-row justify-end bg-slate-100">
+      {zipCode && (
+        <View className="bg-cgreen flex-1 flex justify-center">
+          <Text className="text-cwhite text-lg font-bold text-center">
+            Your Local Area: <Text className="text-yellow-300">{zipCode}</Text>
+          </Text>
+        </View>
+      )}
       <TouchableOpacity onPress={() => setEdit(true)}>
-        <Text className="text-cwhite bg-cgreen px-5 py-5">
-          {zipCode ? zipCode : "Enter Zip Code"}
+        <Text
+          className={
+            "text-cwhite px-5 py-5 font-bold " +
+            (zipCode ? "bg-cgray" : "bg-cgreen")
+          }
+        >
+          Enter Zip Code
         </Text>
       </TouchableOpacity>
       <Modal

@@ -4,7 +4,7 @@ import { useCallback, useState, useEffect } from "react";
 import { fdb } from "../fb";
 import { collection, getDocs } from "firebase/firestore";
 
-export default function Goods() {
+export default function Goods({ setTitle }) {
   let [goods, setGoods] = useState([]);
 
   const loadGoods = useCallback(async () => {
@@ -14,6 +14,7 @@ export default function Goods() {
   }, [setGoods]);
 
   useEffect(() => {
+    setTitle("Essential Goods");
     loadGoods();
   }, [loadGoods]);
 
@@ -36,7 +37,7 @@ function Good({ g }) {
     >
       <Image
         className="h-32 rounded-xl"
-        resizeMode="cover"
+        resizeMode="stretch"
         source={{ uri: g.img }}
       />
       <Text className="text-cgray font-bold text-lg ml-5">{g.product}</Text>

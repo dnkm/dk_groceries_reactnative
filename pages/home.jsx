@@ -1,5 +1,6 @@
 import { View, Text, Image } from "react-native";
 import { Link } from "react-router-native";
+import { useEffect } from "react";
 
 const POPULAR_GOODS = [
   { name: "Tomato", color: "border-red-500" },
@@ -9,7 +10,10 @@ const POPULAR_GOODS = [
   { name: "Asparagus", color: "border-cgreen" },
 ];
 
-export default function Home({ zipCode }) {
+export default function Home({ zipCode, setTitle }) {
+  useEffect(() => {
+    setTitle("");
+  }, []);
   return (
     <View className="flex-1 flex items-center">
       <Text className="mt-10 text-3xl font-bold text-cgreen">
@@ -34,14 +38,17 @@ export default function Home({ zipCode }) {
           </Text>
           <Image
             className="h-16 my-2"
-            resizeMode="cover"
+            resizeMode="stretch"
             source={{ uri: "https://i.imgur.com/eXGfOCd.png" }}
           />
           <Text className="text-2xl font-bold self-center">Albertsons</Text>
           <Text className="font-bold text-cgray self-center">
             14201 Jeffrey Rd
           </Text>
-          <Link className="mt-2 w-full bg-cgreen flex flex-row justify-center py-2 rounded-xl">
+          <Link
+            to="/store/mzMgrIMgXFzGzHKZlWtL"
+            className="mt-2 w-full bg-cgreen flex flex-row justify-center py-2 rounded-xl"
+          >
             <Text className="text-cwhite font-bold">View Store</Text>
           </Link>
         </View>
