@@ -40,7 +40,9 @@ function Good({ g }) {
         resizeMode="stretch"
         source={{ uri: g.img }}
       />
-      <Text className="text-cgray font-bold text-lg ml-5">{g.product}</Text>
+      <Text className="text-cgray font-bold text-lg mx-5 my-4">
+        {g.product}
+      </Text>
       <Link
         to={`/good/${g.product}`}
         className="self-center bg-cgreen w-4/5 flex flex-row justify-center items-center py-2 rounded-xl"

@@ -44,7 +44,7 @@ export default function Stores({ setTitle }) {
               className="w-1/2"
               source={{ uri: store.img }}
             />
-            <View className="w-1/2 px-5">
+            <View className="w-1/2 px-2">
               <Text className="text-2xl font-bold">{store.name}</Text>
               <Text className="font-bold text-cgray">{store.address}</Text>
             </View>
@@ -69,7 +69,9 @@ function Good({ g }) {
         resizeMode="stretch"
         source={{ uri: g.img }}
       />
-      <Text className="text-cdarkgray font-bold text-lg ml-5">{g.product}</Text>
+      <Text className="text-cdarkgray font-bold text-sm mx-5 my-2">
+        {g.product}
+      </Text>
       <Text className="text-cgray font-bold ml-5">
         ${g.price}/{g.unit}
       </Text>
