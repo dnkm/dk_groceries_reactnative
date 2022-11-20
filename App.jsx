@@ -1,10 +1,11 @@
-import { Text, View, TouchableOpacity, Modal, TextInput } from "react-native";
+import { Text, View, TouchableOpacity, Modal, Alert } from "react-native";
 import { NativeRouter, Routes, Route, Link } from "react-router-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import { useState, useEffect, useCallback } from "react";
 import { fdb } from "./fb";
 import Icon from "react-native-vector-icons/Feather";
+import SelectDropdown from "react-native-select-dropdown";
 
 import Home from "./pages/home";
 import RecentViews from "./pages/recent-views";
@@ -12,14 +13,15 @@ import Stores from "./pages/stores";
 import Store from "./pages/store";
 import Goods from "./pages/goods";
 import Good from "./pages/good";
+import AddItem from "./pages/add-item";
 
 export default function App() {
-  let [zipCode, setZipCode] = useState(undefined);
+  let [state, setState] = useState(undefined);
   let [title, setTitle] = useState("");
 
   const ROUTES = [
     {
-      element: <Home zipCode={zipCode} setTitle={setTitle} />,
+      element: <Home state={state} setTitle={setTitle} />,
       path: "/",
     },
     { element: <Stores setTitle={setTitle} />, path: "/stores" },
@@ -27,25 +29,26 @@ export default function App() {
     { element: <Goods setTitle={setTitle} />, path: "/goods" },
     { element: <Good setTitle={setTitle} />, path: `/good/:id` },
     { element: <RecentViews setTitle={setTitle} />, path: "/recentviews" },
+    { element: <AddItem setTitle={setTitle} />, path: "/additem" },
   ];
 
-  const getZipCode = useCallback(async () => {
-    const code = await AsyncStorage.getItem("zip-code");
-    if (code !== null) setZipCode(code);
-  }, [setZipCode]);
+  const getState = useCallback(async () => {
+    const s = await AsyncStorage.getItem("state");
+    if (s !== null) setState(JSON.parse(s));
+  }, [setState]);
 
   useEffect(() => {
-    if (zipCode) AsyncStorage.setItem("zip-code", zipCode);
-  }, [zipCode]);
+    if (state) AsyncStorage.setItem("state", JSON.stringify(state));
+  }, [state]);
 
   useEffect(() => {
-    getZipCode();
+    getState();
   }, []);
 
   return (
     <NativeRouter>
       <View className="h-full flex">
-        <Header zipCode={zipCode} title={title} />
+        <Header title={title} />
         <View className="flex-1">
           <Routes>
             {ROUTES.map((route) => (
@@ -58,7 +61,7 @@ export default function App() {
             ))}
           </Routes>
         </View>
-        <Footer zipCode={zipCode} setZipCode={setZipCode} />
+        <Footer state={state} setState={setState} />
       </View>
     </NativeRouter>
   );
@@ -68,6 +71,7 @@ const MENU = [
   { title: "Essential Goods", path: "/goods" },
   { title: "Local Stores", path: "/stores" },
   { title: "Recent Views", path: "/recentviews" },
+  { title: "Add Item", path: "/additem" },
 ];
 
 function Header({ title }) {
@@ -123,16 +127,77 @@ function Header({ title }) {
   );
 }
 
-function Footer({ zipCode, setZipCode }) {
-  let [editCode, setEditCode] = useState("");
+const STATES = [
+  { ready: true, name: "CALIFORNIA", abbreviation: "CA" },
+  { ready: false, name: "ALABAMA", abbreviation: "AL" },
+  { ready: false, name: "ALASKA", abbreviation: "AK" },
+  { ready: false, name: "AMERICAN SAMOA", abbreviation: "AS" },
+  { ready: false, name: "ARIZONA", abbreviation: "AZ" },
+  { ready: false, name: "ARKANSAS", abbreviation: "AR" },
+  { ready: false, name: "COLORADO", abbreviation: "CO" },
+  { ready: false, name: "CONNECTICUT", abbreviation: "CT" },
+  { ready: false, name: "DELAWARE", abbreviation: "DE" },
+  { ready: false, name: "DISTRICT OF COLUMBIA", abbreviation: "DC" },
+  { ready: false, name: "FEDERATED STATES OF MICRONESIA", abbreviation: "FM" },
+  { ready: false, name: "FLORIDA", abbreviation: "FL" },
+  { ready: false, name: "GEORGIA", abbreviation: "GA" },
+  { ready: false, name: "GUAM", abbreviation: "GU" },
+  { ready: false, name: "HAWAII", abbreviation: "HI" },
+  { ready: false, name: "IDAHO", abbreviation: "ID" },
+  { ready: false, name: "ILLINOIS", abbreviation: "IL" },
+  { ready: false, name: "INDIANA", abbreviation: "IN" },
+  { ready: false, name: "IOWA", abbreviation: "IA" },
+  { ready: false, name: "KANSAS", abbreviation: "KS" },
+  { ready: false, name: "KENTUCKY", abbreviation: "KY" },
+  { ready: false, name: "LOUISIANA", abbreviation: "LA" },
+  { ready: false, name: "MAINE", abbreviation: "ME" },
+  { ready: false, name: "MARSHALL ISLANDS", abbreviation: "MH" },
+  { ready: false, name: "MARYLAND", abbreviation: "MD" },
+  { ready: false, name: "MASSACHUSETTS", abbreviation: "MA" },
+  { ready: false, name: "MICHIGAN", abbreviation: "MI" },
+  { ready: false, name: "MINNESOTA", abbreviation: "MN" },
+  { ready: false, name: "MISSISSIPPI", abbreviation: "MS" },
+  { ready: false, name: "MISSOURI", abbreviation: "MO" },
+  { ready: false, name: "MONTANA", abbreviation: "MT" },
+  { ready: false, name: "NEBRASKA", abbreviation: "NE" },
+  { ready: false, name: "NEVADA", abbreviation: "NV" },
+  { ready: false, name: "NEW HAMPSHIRE", abbreviation: "NH" },
+  { ready: false, name: "NEW JERSEY", abbreviation: "NJ" },
+  { ready: false, name: "NEW MEXICO", abbreviation: "NM" },
+  { ready: false, name: "NEW YORK", abbreviation: "NY" },
+  { ready: false, name: "NORTH CAROLINA", abbreviation: "NC" },
+  { ready: false, name: "NORTH DAKOTA", abbreviation: "ND" },
+  { ready: false, name: "NORTHERN MARIANA ISLANDS", abbreviation: "MP" },
+  { ready: false, name: "OHIO", abbreviation: "OH" },
+  { ready: false, name: "OKLAHOMA", abbreviation: "OK" },
+  { ready: false, name: "OREGON", abbreviation: "OR" },
+  { ready: false, name: "PALAU", abbreviation: "PW" },
+  { ready: false, name: "PENNSYLVANIA", abbreviation: "PA" },
+  { ready: false, name: "PUERTO RICO", abbreviation: "PR" },
+  { ready: false, name: "RHODE ISLAND", abbreviation: "RI" },
+  { ready: false, name: "SOUTH CAROLINA", abbreviation: "SC" },
+  { ready: false, name: "SOUTH DAKOTA", abbreviation: "SD" },
+  { ready: false, name: "TENNESSEE", abbreviation: "TN" },
+  { ready: false, name: "TEXAS", abbreviation: "TX" },
+  { ready: false, name: "UTAH", abbreviation: "UT" },
+  { ready: false, name: "VERMONT", abbreviation: "VT" },
+  { ready: false, name: "VIRGIN ISLANDS", abbreviation: "VI" },
+  { ready: false, name: "VIRGINIA", abbreviation: "VA" },
+  { ready: false, name: "WASHINGTON", abbreviation: "WA" },
+  { ready: false, name: "WEST VIRGINIA", abbreviation: "WV" },
+  { ready: false, name: "WISCONSIN", abbreviation: "WI" },
+  { ready: false, name: "WYOMING", abbreviation: "WY" },
+];
+
+function Footer({ state, setState }) {
   let [edit, setEdit] = useState(false);
 
   return (
     <View className="flex flex-row justify-end bg-slate-100">
-      {zipCode && (
+      {state && (
         <View className="bg-cgreen flex-1 flex justify-center">
           <Text className="text-cwhite text-lg font-bold text-center">
-            Your Local Area: <Text className="text-yellow-300">{zipCode}</Text>
+            Your State: <Text className="text-yellow-300">{state.name}</Text>
           </Text>
         </View>
       )}
@@ -140,10 +205,10 @@ function Footer({ zipCode, setZipCode }) {
         <Text
           className={
             "text-cwhite px-5 py-5 font-bold " +
-            (zipCode ? "bg-cgray" : "bg-cgreen")
+            (state ? "bg-cgray" : "bg-cgreen")
           }
         >
-          Enter Zip Code
+          Select State
         </Text>
       </TouchableOpacity>
       <Modal
@@ -153,40 +218,61 @@ function Footer({ zipCode, setZipCode }) {
         visible={edit}
       >
         <View
-          className="flex-1 flex items-center p-20"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.25)" }}
+          className="flex-1 flex items-center px-10"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.25)", paddingTop: "60%" }}
         >
           <View className="bg-white w-full rounded-xl p-5 flex items-center shadow-lg">
-            <Text className="text-3xl text-green-500">Enter Zip Code</Text>
-            <TextInput
-              className="bg-gray-200 w-full p-2 my-5"
-              placeholder="Zip Code"
-              value={editCode}
-              onChangeText={setEditCode}
-            ></TextInput>
-            <View className="flex flex-row justify-around w-full">
-              <TouchableOpacity
-                onPress={() => {
-                  setZipCode(editCode);
+            <Text className="text-3xl text-cgreen mb-5">Select State</Text>
+            <SelectDropdown
+              data={STATES}
+              defaultValue={state}
+              defaultButtonText="Select State"
+              onSelect={(selectedItem, index) => {
+                if (selectedItem.ready) {
+                  setState(selectedItem);
                   setEdit(false);
-                }}
-                className="py-2 px-5 bg-green-200 rounded-xl"
-              >
-                <Text>Set</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setEditCode("");
-                  setEdit(false);
-                }}
-                className="py-2 px-5 bg-red-200 rounded-xl"
-              >
-                <Text>Cancel</Text>
-              </TouchableOpacity>
-            </View>
+                } else {
+                  Alert.alert(
+                    "This State Is Not Ready Yet",
+                    "Your state will be available soon!",
+                    [
+                      {
+                        text: "Confirm",
+                        onPress: () => console.log("confirmed"),
+                        style: "cancel",
+                      },
+                    ]
+                  );
+                }
+              }}
+              buttonTextAfterSelection={(selectedItem, index) =>
+                selectedItem.name + " (" + selectedItem.abbreviation + ")"
+              }
+              rowTextForSelection={(item, index) =>
+                item.name + " (" + item.abbreviation + ")"
+              }
+              renderCustomizedRowChild={(item) => <RenderRow state={item} />}
+            />
           </View>
         </View>
       </Modal>
+    </View>
+  );
+}
+
+function RenderRow({ state }) {
+  return (
+    <View
+      className={
+        "px-2 w-full h-full flex justify-center" +
+        (!state.ready ? " bg-gray-200 opacity-50" : "")
+      }
+    >
+      <Text className="">
+        {state.name}
+        <Text className="font-bold">({state.abbreviation})</Text>
+      </Text>
+      {!state.ready && <Text>Available soon...</Text>}
     </View>
   );
 }

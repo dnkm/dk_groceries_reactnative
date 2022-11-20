@@ -33,9 +33,8 @@ export default function RecentViews({ setTitle }) {
 
   function randomTimes(length) {
     let r = [];
-    for (let i = 0; i < length; i++)
-      r.push(Math.floor(Math.random() * 100 + 1));
-    r = r.sort();
+    for (let i = 0; i < length; i++) r.push(Math.floor(Math.random() * 50 + 1));
+    r.sort();
     r = r.map((r) =>
       r <= 30
         ? r === 1
@@ -45,7 +44,6 @@ export default function RecentViews({ setTitle }) {
         ? Math.floor(r / 30) + " month ago"
         : Math.floor(r / 30) + " months ago"
     );
-    console.log(r);
     setTimes(r);
   }
 

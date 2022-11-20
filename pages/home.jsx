@@ -10,7 +10,7 @@ const POPULAR_GOODS = [
   { name: "Asparagus", color: "border-cgreen" },
 ];
 
-export default function Home({ zipCode, setTitle }) {
+export default function Home({ state, setTitle }) {
   useEffect(() => {
     setTitle("");
   }, []);
@@ -31,7 +31,7 @@ export default function Home({ zipCode, setTitle }) {
           </View>
         ))}
       </View>
-      {zipCode && (
+      {state && (
         <View className="bg-slate-100 w-4/5 py-5 px-10 mt-10 rounded-xl flex">
           <Text className="text-2xl font-bold self-center">
             Your Local Store
