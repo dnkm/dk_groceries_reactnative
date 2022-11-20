@@ -2,7 +2,7 @@
   "expo": {
     "name": "grocerEZ",
     "slug": "grocerEZ",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -24,10 +24,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.caffeined.grocerEZ",
+      "versionCode": 3
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "extra": {
+      "eas": {
+        "projectId": "7ec00ea0-e201-4f93-bc87-691539aed6ca"
+      }
+    }
   }
 }

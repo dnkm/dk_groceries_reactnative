@@ -1,7 +1,13 @@
-import { Text, View, TouchableOpacity, Modal, Alert } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Modal,
+  Alert,
+  StatusBar,
+} from "react-native";
 import { NativeRouter, Routes, Route, Link } from "react-router-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Constants from "expo-constants";
 import { useState, useEffect, useCallback } from "react";
 import { fdb } from "./fb";
 import Icon from "react-native-vector-icons/Feather";
@@ -47,6 +53,7 @@ export default function App() {
 
   return (
     <NativeRouter>
+      <StatusBar hidden={false} backgroundColor="#06ac80" />
       <View className="h-full flex">
         <Header title={title} />
         <View className="flex-1">
@@ -78,10 +85,7 @@ function Header({ title }) {
   let [menu, setMenu] = useState(false);
 
   return (
-    <View
-      className="bg-slate-100 flex flex-row justify-between py-2 px-5 shadow-lg items-center"
-      style={{ marginTop: Constants.statusBarHeight }}
-    >
+    <View className="bg-slate-100 flex flex-row justify-between py-2 px-5 shadow-lg items-center">
       <Link to="/" className="w-1/3">
         <Text className="text-cgreen text-xl font-bold">GrocerEZ</Text>
       </Link>
